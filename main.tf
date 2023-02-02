@@ -7,7 +7,7 @@ resource "azurerm_resource_group" "rg" {
   name     = random_pet.rg_name.id
 }
 
-#create virtual network
+# Create virtual network
 resource "azurerm_virtual_network" "my_terraform_network" {
   name                = "myVnet"
   address_space       = ["10.0.0.0/16"]
@@ -15,7 +15,7 @@ resource "azurerm_virtual_network" "my_terraform_network" {
   resource_group_name = azurerm_resource_group.rg.name
 }
 
-//crate subnet
+# Create subnet
 resource "azurerm_subnet" "my_terraform_subnet" {
   name                 = "mySubnet"
   resource_group_name  = azurerm_resource_group.rg.name
@@ -70,7 +70,6 @@ resource "azurerm_network_interface_security_group_association" "example" {
   network_security_group_id = azurerm_network_security_group.my_terraform_nsg.id
 }
 
-
 # Generate random text for a unique storage account name
 resource "random_id" "random_id" {
   keepers = {
@@ -79,6 +78,15 @@ resource "random_id" "random_id" {
   }
 
   byte_length = 8
+}
+
+# Create storage account for boot diagnostics
+resource "azurerm_storage_account" "my_storage_account" {
+  name                     = "diag${random_id.random_id.hex}"
+  location                 = azurerm_resource_group.rg.location
+  resource_group_name      = azurerm_resource_group.rg.name
+  account_tier             = "Standard"
+  account_replication_type = "LRS"
 }
 
 # Create (and display) an SSH key
